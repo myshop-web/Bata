@@ -408,7 +408,7 @@
 <!-- ── Header ── -->
 <header>
     <div class="header-inner" id="header-inner">
-        <a href="index.html" class="logo">
+        <a href="/" class="logo">
             BATA
             <span class="logo-tag">Quality Footwear Since 1894</span>
         </a>
@@ -425,7 +425,7 @@
             <button class="header-btn btn-signin" onclick="openModal('signin')">Sign In</button>
             <button class="header-btn btn-signup" onclick="openModal('signup')">Sign Up</button>
         </div>
-        <a href="index.html" class="back-link" id="back-link" style="display:none">← Back to Store</a>
+        <a href="/" class="back-link" id="back-link" style="display:none">← Back to Store</a>
 
         <div id="user-chip">
             <button class="chip-toggle" onclick="toggleDropdown()" id="chip-toggle-btn">
@@ -619,7 +619,7 @@
     <div class="error-card">
         <h2>Sign-in Failed</h2>
         <p id="error-msg">Something went wrong. Please try again.</p>
-        <a href="index.html" class="btn-back">Back to Store</a>
+        <a href="/" class="btn-back">Back to Store</a>
     </div>
 </div>
 
@@ -764,7 +764,8 @@
         authServer:   'https://azure-dev.ship2myid.com/auth-server',
     };
 
-    let _accessToken   = null;
+    let _accessToken    = null;
+    let _idToken        = null;
     let _pendingUserInfo = null;
 
     // ══════════════════════════════════════════════════════════════
@@ -890,7 +891,7 @@
     _authChannel.onmessage = e => {
         if (e.data === 'signout') {
             sessionStorage.clear();
-            window.location = 'index.html';
+            window.location = '/';
         }
     };
 
@@ -1069,6 +1070,7 @@
             const tokens = await tokenRes.json();
             if (!tokenRes.ok) throw new Error('Token exchange failed: ' + (tokens.error_description || tokens.error));
             _accessToken = tokens.access_token;
+            _idToken     = tokens.id_token || null;
 
             window.history.replaceState({}, '', window.location.pathname);
             restoreCart();
@@ -1326,12 +1328,14 @@
         setTimeout(() => t.classList.remove('show'), 3500);
     }
 
-    // ── Sign out — clear local data and notify all tabs ──────────
+    // ── Sign out — clear local data then redirect to auth server logout ──
     async function signOut() {
-        // Clear all cookies for this origin
+        // Clear all cookies on this page's origin
         document.cookie.split(';').forEach(c => {
             const name = c.split('=')[0].trim();
-            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            if (name) {
+                document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            }
         });
 
         // Clear all IndexedDB profiles
@@ -1341,7 +1345,15 @@
         try { _authChannel.postMessage('signout'); } catch (_) {}
 
         sessionStorage.clear();
-        window.location = 'index.html';
+
+        // Redirect to auth server logout endpoint.
+        // The auth server clears its session cookies then returns to post_logout_redirect_uri.
+        // id_token_hint lets the server know which session to end.
+        const redirectUri = window.location.href.split('?')[0].split('#')[0];
+        const logoutUrl   = new URL(`${CONFIG.authServer}/postlogin/logout`);
+        if (_idToken) logoutUrl.searchParams.set('id_token_hint', _idToken);
+        logoutUrl.searchParams.set('post_logout_redirect_uri', redirectUri);
+        window.location.href = logoutUrl.toString();
     }
 
     // ── Revoke token (separate action) ───────────────────────────
