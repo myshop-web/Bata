@@ -345,6 +345,56 @@
                          font-size: 12px; text-align: center; }
         footer a { color: #aa6666; text-decoration: none; }
         footer a:hover { color: var(--brand-light); }
+
+        /* ── DB Viewer ── */
+        .db-float-btn { position: fixed; bottom: 24px; left: 24px; background: #1a0000;
+                        color: var(--brand); border: 1.5px solid var(--brand); border-radius: 8px;
+                        padding: 10px 16px; font-size: 12px; font-weight: 800; cursor: pointer;
+                        text-transform: uppercase; letter-spacing: 0.5px; z-index: 400;
+                        transition: all 0.2s; box-shadow: 0 4px 14px rgba(204,0,0,0.25); }
+        .db-float-btn:hover { background: var(--brand); color: white; }
+        .db-modal-box { background: white; border-radius: 16px; width: 100%; max-width: 920px;
+                        margin: 16px; max-height: 85vh; display: flex; flex-direction: column;
+                        box-shadow: 0 24px 64px rgba(0,0,0,0.2); overflow: hidden;
+                        animation: slideUp 0.25s ease; }
+        .db-modal-header { background: #1a0000; padding: 20px 24px;
+                           display: flex; align-items: center; justify-content: space-between; }
+        .db-modal-title { display: flex; align-items: center; gap: 12px; }
+        .db-modal-title-icon { font-size: 26px; }
+        .db-modal-title h2 { font-size: 17px; font-weight: 900; color: white;
+                             text-transform: uppercase; letter-spacing: 1px; }
+        .db-modal-title p  { font-size: 11px; color: #886666; margin-top: 2px; }
+        .db-header-btns { display: flex; gap: 8px; align-items: center; }
+        .db-refresh-btn { background: rgba(204,0,0,0.2); color: #ff9999;
+                          border: 1px solid rgba(204,0,0,0.35); border-radius: 6px;
+                          padding: 7px 14px; font-size: 11px; font-weight: 800;
+                          cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+        .db-refresh-btn:hover { background: rgba(204,0,0,0.4); }
+        .db-close-btn { background: rgba(255,255,255,0.08); color: #aaa;
+                        border: 1px solid rgba(255,255,255,0.12); border-radius: 6px;
+                        padding: 7px 13px; font-size: 15px; cursor: pointer; }
+        .db-close-btn:hover { background: rgba(255,255,255,0.16); color: white; }
+        .db-modal-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+        .db-meta { font-size: 12px; color: #888; margin-bottom: 16px; }
+        .db-meta strong { color: var(--brand); }
+        .db-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .db-table th { background: #faf8f8; border-bottom: 2px solid #f0e8e8; padding: 10px 12px;
+                       text-align: left; font-size: 10px; text-transform: uppercase;
+                       letter-spacing: 0.8px; color: #aaa; font-weight: 700; white-space: nowrap; }
+        .db-table td { padding: 11px 12px; border-bottom: 1px solid #faf5f5;
+                       color: #333; vertical-align: middle; }
+        .db-table tr:hover td { background: #fff8f8; }
+        .db-sub { font-family: monospace; font-size: 11px; color: #888;
+                  background: #f5f0f0; padding: 2px 7px; border-radius: 3px; }
+        .db-name { font-weight: 700; color: #1a1a1a; }
+        .db-delete-btn { background: #fff0f0; color: var(--brand); border: 1px solid #ffcccc;
+                         border-radius: 5px; padding: 5px 12px; font-size: 11px; font-weight: 800;
+                         cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+                         transition: all 0.2s; white-space: nowrap; }
+        .db-delete-btn:hover { background: var(--brand); color: white; border-color: var(--brand); }
+        .db-empty { text-align: center; padding: 52px 24px; color: #bbb; }
+        .db-empty-icon { font-size: 52px; margin-bottom: 14px; }
+        .db-empty p { font-size: 14px; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -358,7 +408,7 @@
 <!-- ── Header ── -->
 <header>
     <div class="header-inner" id="header-inner">
-        <a href="bata.html" class="logo">
+        <a href="index.html" class="logo">
             BATA
             <span class="logo-tag">Quality Footwear Since 1894</span>
         </a>
@@ -375,7 +425,7 @@
             <button class="header-btn btn-signin" onclick="openModal('signin')">Sign In</button>
             <button class="header-btn btn-signup" onclick="openModal('signup')">Sign Up</button>
         </div>
-        <a href="bata.html" class="back-link" id="back-link" style="display:none">← Back to Store</a>
+        <a href="index.html" class="back-link" id="back-link" style="display:none">← Back to Store</a>
 
         <div id="user-chip">
             <button class="chip-toggle" onclick="toggleDropdown()" id="chip-toggle-btn">
@@ -506,9 +556,15 @@
             </div>
             <div class="pf-grid">
                 <div class="pf-group">
+                    <label>Username</label>
+                    <input type="text" id="pf-username" placeholder="username" />
+                </div>
+                <div class="pf-group">
                     <label>Email Address</label>
                     <input type="email" id="pf-email" placeholder="you@example.com" />
                 </div>
+            </div>
+            <div class="pf-grid">
                 <div class="pf-group">
                     <label>Phone Number</label>
                     <input type="tel" id="pf-phone" placeholder="+91 XXXXX XXXXX" />
@@ -547,7 +603,7 @@
         </div>
         <div class="profile-actions">
             <button class="save-btn" onclick="saveAndProceed()">
-                Save &amp; Continue to Checkout →
+                Save &amp; Continue →
             </button>
             <div class="saving-note">
                 🔒 Saved locally in your browser's IndexedDB — no server storage
@@ -563,7 +619,7 @@
     <div class="error-card">
         <h2>Sign-in Failed</h2>
         <p id="error-msg">Something went wrong. Please try again.</p>
-        <a href="bata.html" class="btn-back">Back to Store</a>
+        <a href="index.html" class="btn-back">Back to Store</a>
     </div>
 </div>
 
@@ -669,6 +725,33 @@
 
 <div id="toast"></div>
 
+<!-- ══════════════════════════════════════════
+     DB VIEWER — Float button + Modal
+══════════════════════════════════════════ -->
+<button class="db-float-btn" onclick="openDBViewer()">🗄️ Saved Profiles</button>
+
+<div id="db-modal" class="modal-overlay" onclick="closeDBModalOnOverlay(event)">
+    <div class="db-modal-box">
+        <div class="db-modal-header">
+            <div class="db-modal-title">
+                <span class="db-modal-title-icon">🗄️</span>
+                <div>
+                    <h2>IndexedDB Viewer</h2>
+                    <p>bata_users &nbsp;/&nbsp; profiles store</p>
+                </div>
+            </div>
+            <div class="db-header-btns">
+                <button class="db-refresh-btn" onclick="loadDBRecords()">↻ Refresh</button>
+                <button class="db-close-btn" onclick="closeDBModal()">&times;</button>
+            </div>
+        </div>
+        <div class="db-modal-body">
+            <div class="db-meta" id="db-meta">Loading…</div>
+            <div id="db-table-wrap"></div>
+        </div>
+    </div>
+</div>
+
 <script>
     // ══════════════════════════════════════════════════════════════
     //  CONFIG
@@ -724,6 +807,36 @@
                 req.onsuccess = () => resolve();
                 req.onerror   = e => reject(e.target.error);
             });
+        },
+
+        async getAll() {
+            const db = await this.open();
+            return new Promise((resolve, reject) => {
+                const tx  = db.transaction(this.STORE, 'readonly');
+                const req = tx.objectStore(this.STORE).getAll();
+                req.onsuccess = e => resolve(e.target.result || []);
+                req.onerror   = e => reject(e.target.error);
+            });
+        },
+
+        async delete(sub) {
+            const db = await this.open();
+            return new Promise((resolve, reject) => {
+                const tx  = db.transaction(this.STORE, 'readwrite');
+                const req = tx.objectStore(this.STORE).delete(sub);
+                req.onsuccess = () => resolve();
+                req.onerror   = e => reject(e.target.error);
+            });
+        },
+
+        async clearAll() {
+            const db = await this.open();
+            return new Promise((resolve, reject) => {
+                const tx  = db.transaction(this.STORE, 'readwrite');
+                const req = tx.objectStore(this.STORE).clear();
+                req.onsuccess = () => resolve();
+                req.onerror   = e => reject(e.target.error);
+            });
         }
     };
 
@@ -769,6 +882,17 @@
             handleCallback(p);
         }
     })();
+
+    // ══════════════════════════════════════════════════════════════
+    //  CROSS-TAB BROADCAST CHANNEL
+    // ══════════════════════════════════════════════════════════════
+    const _authChannel = new BroadcastChannel('bata_auth_channel');
+    _authChannel.onmessage = e => {
+        if (e.data === 'signout') {
+            sessionStorage.clear();
+            window.location = 'index.html';
+        }
+    };
 
     // ══════════════════════════════════════════════════════════════
     //  PRODUCTS
@@ -829,7 +953,7 @@
     function viewCart() {
         if (!cart.length) { showToast('Your cart is empty'); return; }
         const total = cart.reduce((s, p) => s + p.price, 0);
-        showToast('Cart: ' + cart.length + ' item(s) · ₹' + total.toLocaleString('en-IN') + ' (Sign in to checkout)');
+        showToast('Cart: ' + cart.length + ' item(s) · ₹' + total.toLocaleString('en-IN') + ' (Sign in )');
     }
 
     function saveCart()    { sessionStorage.setItem('bata_cart', JSON.stringify(cart)); }
@@ -851,7 +975,7 @@
         const subtitle = document.getElementById('modal-subtitle');
         if (mode === 'signup') {
             title.textContent    = 'Create Your Account';
-            subtitle.textContent = 'Sign up to save your profile for instant checkout';
+            subtitle.textContent = 'Sign up to save your profile';
         } else {
             title.textContent    = 'Welcome Back';
             subtitle.textContent = 'Sign in to access your saved profile & fast checkout';
@@ -970,10 +1094,10 @@
                     }
                 }
 
-                // Not in IndexedDB — fetch from API
+                // Not in IndexedDB — fetch from API and sign in directly (no form, no save)
                 showLoading('Fetching your profile…', 'Calling UserInfo API…');
                 const userInfo = await fetchUserInfo(tokens.access_token);
-                showProfileReview(userInfo, 'signin-new');
+                renderCheckout(userInfo, 'api-signin');
             }
 
         } catch (err) {
@@ -1010,13 +1134,14 @@
         const addr = userInfo.address || {};
         document.getElementById('pf-given-name').value  = sv(userInfo.given_name)  || sv(userInfo.name);
         document.getElementById('pf-family-name').value = sv(userInfo.family_name);
+        document.getElementById('pf-username').value    = sv(userInfo.preferred_username);
         document.getElementById('pf-email').value       = sv(userInfo.email);
         document.getElementById('pf-phone').value       = sv(userInfo.phone_number);
         document.getElementById('pf-street').value      = sv(addr.street_address);
         document.getElementById('pf-city').value        = sv(addr.locality);
         document.getElementById('pf-state').value       = sv(addr.region);
         document.getElementById('pf-postal').value      = sv(addr.postal_code);
-        document.getElementById('pf-country').value     = sv(addr.country);
+        document.getElementById('pf-country').value     = sv(addr.country) || sv(userInfo.country);
         document.getElementById('pf-gender').value      = sv(userInfo.gender);
 
         document.getElementById('profile-view').style.display = 'block';
@@ -1029,21 +1154,25 @@
         const familyName = document.getElementById('pf-family-name').value.trim();
         const fullName   = [givenName, familyName].filter(Boolean).join(' ') || sv(_pendingUserInfo.name);
 
+        const countryVal = document.getElementById('pf-country').value.trim()
+                        || sv(_pendingUserInfo.country);
         const updated = {
             ..._pendingUserInfo,
-            name:         fullName,
-            given_name:   givenName  || _pendingUserInfo.given_name,
-            family_name:  familyName || _pendingUserInfo.family_name,
-            email:        document.getElementById('pf-email').value.trim()  || _pendingUserInfo.email,
-            phone_number: document.getElementById('pf-phone').value.trim()  || _pendingUserInfo.phone_number,
-            gender:       document.getElementById('pf-gender').value.trim() || _pendingUserInfo.gender,
+            name:               fullName,
+            given_name:         givenName  || _pendingUserInfo.given_name,
+            family_name:        familyName || _pendingUserInfo.family_name,
+            preferred_username: document.getElementById('pf-username').value.trim() || sv(_pendingUserInfo.preferred_username),
+            email:              document.getElementById('pf-email').value.trim()    || sv(_pendingUserInfo.email),
+            phone_number:       document.getElementById('pf-phone').value.trim()    || sv(_pendingUserInfo.phone_number),
+            gender:             document.getElementById('pf-gender').value.trim()   || sv(_pendingUserInfo.gender),
+            country:            countryVal,
             address: {
                 ...(_pendingUserInfo.address || {}),
                 street_address: document.getElementById('pf-street').value.trim(),
                 locality:       document.getElementById('pf-city').value.trim(),
                 region:         document.getElementById('pf-state').value.trim(),
                 postal_code:    document.getElementById('pf-postal').value.trim(),
-                country:        document.getElementById('pf-country').value.trim(),
+                country:        countryVal,
             },
         };
 
@@ -1097,16 +1226,18 @@
             ? '<div class="source-badge source-idb">⚡ Loaded from IndexedDB — no API call needed</div>'
             : '<div class="source-badge source-api">✓ Profile fetched from PostApp API &amp; saved locally</div>';
 
-        document.getElementById('f-name').innerHTML  = mkField('Full Name', name);
+        document.getElementById('f-name').innerHTML  = mkField('Full Name', name)
+            + mkField('Username', userInfo.preferred_username);
         document.getElementById('f-email').innerHTML = mkField('Email', userInfo.email);
         document.getElementById('f-phone').innerHTML = mkField('Phone', userInfo.phone_number);
 
+        const countryDisplay = sv(addr.country) || sv(userInfo.country);
         document.getElementById('address-grid').innerHTML = [
             mkField('Street Address', addr.street_address, true),
             mkField('City',           addr.locality),
             mkField('State / Region', addr.region),
             mkField('Postal Code',    addr.postal_code),
-            mkField('Country',        addr.country),
+            mkField('Country',        countryDisplay),
         ].join('');
 
         document.getElementById('raw-userinfo').textContent = JSON.stringify(userInfo, null, 2);
@@ -1142,14 +1273,16 @@
         document.getElementById('pd-name').textContent     = name;
         document.getElementById('pd-badge').textContent    = source === 'indexeddb' ? '⚡ IndexedDB Cache' : 'PostApp Verified';
 
+        const resolvedCountry = sv(addr.country) || sv(userInfo.country);
         const rows = [
-            userInfo.email        && { icon:'📧', label:'Email',    value: userInfo.email },
-            userInfo.phone_number && { icon:'📱', label:'Phone',    value: userInfo.phone_number },
-            userInfo.gender       && { icon:'👤', label:'Gender',   value: userInfo.gender },
-            userInfo.birthdate    && { icon:'🎂', label:'DOB',      value: userInfo.birthdate },
-            (sv(addr.locality) || sv(addr.country)) && {
+            userInfo.preferred_username && { icon:'🪪', label:'Username',  value: userInfo.preferred_username },
+            userInfo.email              && { icon:'📧', label:'Email',     value: userInfo.email },
+            userInfo.phone_number       && { icon:'📱', label:'Phone',     value: userInfo.phone_number },
+            userInfo.gender             && { icon:'👤', label:'Gender',    value: userInfo.gender },
+            userInfo.birthdate          && { icon:'🎂', label:'DOB',       value: userInfo.birthdate },
+            (sv(addr.locality) || resolvedCountry) && {
                 icon:'📍', label:'Location',
-                value: [sv(addr.locality), sv(addr.region), sv(addr.country)].filter(Boolean).join(', ')
+                value: [sv(addr.locality), sv(addr.region), resolvedCountry].filter(Boolean).join(', ')
             },
         ].filter(Boolean);
 
@@ -1161,7 +1294,11 @@
                     <div class="pd-value">${esc(r.value)}</div>
                 </div>
             </div>`).join('') + '<hr class="pd-divider">' +
-            `<div class="pd-row" style="cursor:pointer; color:#CC0000;" onclick="signOut()">
+            `<div class="pd-row" style="cursor:pointer; color:#b45309;" onclick="revokeToken()">
+                <span class="pd-icon">🔑</span>
+                <div><div class="pd-value">Revoke Token</div></div>
+             </div>
+             <div class="pd-row" style="cursor:pointer; color:#CC0000;" onclick="signOut()">
                 <span class="pd-icon">🚪</span>
                 <div><div class="pd-value">Sign out</div></div>
              </div>`;
@@ -1189,22 +1326,49 @@
         setTimeout(() => t.classList.remove('show'), 3500);
     }
 
-    // ── Sign out — revoke token then redirect ─────────────────────
+    // ── Sign out — clear local data and notify all tabs ──────────
     async function signOut() {
-        if (_accessToken) {
-            try {
-                await fetch(`${CONFIG.authServer}/oauth/revoke`, {
-                    method:  'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body:    new URLSearchParams({
-                        token:         _accessToken,
-                        client_id:     CONFIG.clientId,
-                        client_secret: CONFIG.clientSecret,
-                    }),
-                });
-            } catch (_) { /* ignore revoke errors — always sign out locally */ }
+        // Clear all cookies for this origin
+        document.cookie.split(';').forEach(c => {
+            const name = c.split('=')[0].trim();
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        });
+
+        // Clear all IndexedDB profiles
+        try { await IDB.clearAll(); } catch (_) {}
+
+        // Notify all other open tabs to sign out too
+        try { _authChannel.postMessage('signout'); } catch (_) {}
+
+        sessionStorage.clear();
+        window.location = 'index.html';
+    }
+
+    // ── Revoke token (separate action) ───────────────────────────
+    async function revokeToken() {
+        if (!_accessToken) {
+            showToast('⚠️ No active token to revoke.');
+            return;
         }
-        window.location = 'bata.html';
+        try {
+            const res = await fetch(`${CONFIG.authServer}/oauth/revoke`, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body:    new URLSearchParams({
+                    token:         _accessToken,
+                    client_id:     CONFIG.clientId,
+                    client_secret: CONFIG.clientSecret,
+                }),
+            });
+            if (res.ok) {
+                showToast('✅ Token revoked successfully.');
+                _accessToken = null;
+            } else {
+                showToast('⚠️ Revoke failed: ' + res.status);
+            }
+        } catch (e) {
+            showToast('⚠️ Revoke error: ' + e.message);
+        }
     }
 
     // ── Profile dropdown toggle ───────────────────────────────────
@@ -1219,6 +1383,93 @@
             document.getElementById('profile-dropdown').classList.remove('open');
         }
     });
+
+    // ══════════════════════════════════════════════════════════════
+    //  DB VIEWER
+    // ══════════════════════════════════════════════════════════════
+    function openDBViewer() {
+        document.getElementById('db-modal').classList.add('open');
+        loadDBRecords();
+    }
+    function closeDBModal() {
+        document.getElementById('db-modal').classList.remove('open');
+    }
+    function closeDBModalOnOverlay(e) {
+        if (e.target.id === 'db-modal') closeDBModal();
+    }
+
+    async function loadDBRecords() {
+        document.getElementById('db-meta').textContent = 'Loading…';
+        document.getElementById('db-table-wrap').innerHTML = '';
+        try {
+            const records = await IDB.getAll();
+            renderDBTable(records);
+        } catch (e) {
+            document.getElementById('db-meta').textContent = 'Error reading IndexedDB: ' + e.message;
+        }
+    }
+
+    function renderDBTable(records) {
+        const metaEl = document.getElementById('db-meta');
+        const wrapEl = document.getElementById('db-table-wrap');
+
+        metaEl.innerHTML = `Store: <strong>${IDB.DB_NAME} / ${IDB.STORE}</strong> &nbsp;·&nbsp; <strong>${records.length}</strong> saved profile(s) &nbsp;·&nbsp; <em style="font-style:normal;color:#aaa;">Shared across all tabs on this origin</em>`;
+
+        if (!records.length) {
+            wrapEl.innerHTML = `
+                <div class="db-empty">
+                    <div class="db-empty-icon">🗂️</div>
+                    <p>No saved profiles yet.<br>Sign up to save your first profile to IndexedDB.</p>
+                </div>`;
+            return;
+        }
+
+        const rows = records.map(r => {
+            const addr = r.address || {};
+            const name = r.name || [r.given_name, r.family_name].filter(Boolean).join(' ') || '—';
+            const loc  = [sv(addr.locality), sv(addr.region), sv(addr.country)].filter(Boolean).join(', ') || '—';
+            return `<tr>
+                <td><span class="db-sub">${esc(r.sub)}</span></td>
+                <td><span class="db-name">${esc(name)}</span></td>
+                <td>${esc(r.email || '—')}</td>
+                <td>${esc(r.phone_number || '—')}</td>
+                <td>${esc(loc)}</td>
+                <td>
+                    <button class="db-delete-btn"
+                            data-sub="${esc(r.sub)}"
+                            onclick="deleteDBRecord(this.dataset.sub)">
+                        🗑 Delete
+                    </button>
+                </td>
+            </tr>`;
+        }).join('');
+
+        wrapEl.innerHTML = `
+            <table class="db-table">
+                <thead>
+                    <tr>
+                        <th>Sub ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Location</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>`;
+    }
+
+    async function deleteDBRecord(sub) {
+        if (!confirm('Delete saved profile for "' + sub + '"?\nThis cannot be undone.')) return;
+        try {
+            await IDB.delete(sub);
+            showToast('🗑️ Profile deleted from IndexedDB');
+            loadDBRecords();
+        } catch (e) {
+            showToast('⚠️ Delete failed: ' + e.message);
+        }
+    }
 </script>
 </body>
 </html>
